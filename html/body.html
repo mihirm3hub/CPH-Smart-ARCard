@@ -1,0 +1,145 @@
+<!-- Copyright (c) 2022 8th Wall, Inc. -->
+<!-- body.html is optional; elements will be added to your html body after app.js is loaded. -->
+<!-- CPH loading UI -->
+<div id="gradient" class="gradient-move absolute-fill">
+    <img id="cphLogo" src="https://cdn.glitch.global/a9d7e03a-1f4f-4751-9ea0-b1ed9029613b/Outro_small.gif">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+      <div class="spinner"></div>
+   </div>
+   <div id="start"  style="display:none">
+     <h2>Start</h2>
+   </div>
+ </div>
+ <img id="poweredby" src="https://cdn.glitch.global/a9d7e03a-1f4f-4751-9ea0-b1ed9029613b/poweredBy.svg">
+ 
+ <div id="inst" class="absolute-fill hidden">
+   <img src="assets/textures/Instructions.jpg">
+ </div>
+ <img id="instIco" src="./assets/icons/Instructions_Icon.png">
+ 
+ <div id="container" class="collapsed">
+   <div class="outer">
+     <div id="closeButton" onclick="hideAll()"><img id="closeIco" src="./assets/icons/close.png"></div>
+     
+   </div>
+   <div class="outer" id="contents">
+     <h2>CPHLIVE Profil: Pedro</h2>
+    <iframe src="https://player.vimeo.com/video/817557011?h=7c87d3cd4f" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+   <!--<div class="outer">Contents go here</div>-->
+   </div>
+ </div>
+ 
+ <a-scene
+   cph-load-screen
+   landing-page
+   xrextras-loading
+   xrextras-runtime-error
+   render-order="layer1, layer2"
+   xrweb>
+ 
+   <a-assets>
+     <a-asset-item id="pedroModel" src="assets/models/Pedro_Idle_04.glb"></a-asset-item>
+     <a-asset-item id="hiderModel" src="assets/models/Pedro_Idle_02_Occlusion_Plane.glb"></a-asset-item>
+     <img id="card-thumb" src="assets/textures/Business_Card_Back.jpg">
+     <img id="opac-tex" src="assets/Rectangle_16.png">
+     <video 
+       id="alpha-video" 
+       autoplay 
+       muted 
+       playsinline
+       crossorigin="anonymous" 
+       loop="false" 
+       src="./assets/Business_Card_Video.mp4"
+     ></video>
+     <img id="profile-icon" src="./assets/icons/profile.png"/>
+     <!-- MENU ITEMS -->
+     <img id="web-icon" src="assets/icons/Icon_Mail.png"/>
+     <img id="phone-icon" src="assets/icons/Icon_Phone.png"/>
+     <!-- BOTTOM MENU ITEMS -->
+     <img id="bb-thumb" src="assets/textures/Case_Thumbnail_Big_Bang.jpg"/>
+     <img id="di-thumb" src="assets/textures/Case_Thumbnail_DI.jpg"/>
+     <img id="xr-thumb" src="assets/textures/Case_Thumbnail_XR.jpg"/>
+ 
+     <img id="vidThumb" src="assets/textures/Video_Thumbnail.jpg"/>
+ 
+     <a-mixin id="iconProperties" scale="0.3 0.3 0.3" material="alpha-test:0.5" animation="property: scale; to: 0.5 0.5 0.5; dur: 1000; loop:false;"></a-mixin>
+     <a-mixin id="thumbProperties" material="alpha-test:0.5" animation="property: material.opacity; to: 1; dur: 1000; loop:false;"></a-mixin>
+   </a-assets>
+   
+   <a-camera
+     id="camera"
+     position="0 -4 4"
+     raycaster="objects: .cantap"
+     cursor="fuse: false; rayOrigin: mouse;">
+   </a-camera>
+   
+   <a-light type="ambient" intensity="0.8"></a-light>
+ 
+   <a-entity id="front" handle-card-front="name: Target_Front">
+     <a-entity id="frontParent" position="0 -1.15 0.3" scale=".15 .15 .15" shadow></a-entity>
+     <a-plane id="winText" width="1.1" height=".73" visible="false" 
+     material="src:#opac-tex; shader:flat; transparent:true; depthTest:false" 
+     position="0 0 0.18">
+       <a-entity text="value:Well Done !! You Win; color:#0000ee; shader: msdf; font:https://raw.githubusercontent.com/etiennepinchon/aframe-fonts/master/fonts/poppins/Poppins-Bold.json;" position=".55 0 0.1" scale="2 2 2"></a-entity>
+     </a-plane>
+     <!-- <a-plane width="1.15" height=".75" material="shader:s" shadow position="0 0 0"></a-plane> -->
+   </a-entity> 
+   <!-- Note: "name:" must be set to the name of the image target uploaded to the 8th Wall Console -->
+   <a-entity id="back" icon-anim="name: Target_Back_updated">
+     <a-entity gltf-model="#hiderModel" render-order="layer2" custom-hider-material position="0 -0.098 0" scale="1.03 1.02 1.03"></a-entity>
+     <a-entity 
+       id="alphaVid"
+       position="0 -0.45 0.01"
+       scale="1.16 1.2 1.2"
+       render-order="layer1"
+       no-cull
+       material="shader: chromakey; src: #alpha-video; color: 0.1 0.1 0.1; opacity:0"
+       geometry="primitive: plane; height: 1.688; width: 3;">
+     </a-entity> 
+     <!-- 3D assets -->
+     <a-entity 
+       id="pedro-model" 
+       gltf-model="#pedroModel" 
+       render-order="layer3"
+       class="cantap"
+       position="0 -1.65 -0.5"
+       scale="1.03 1.05 1.03"
+       animation-mixer="clip: *"
+       model-relative-opacity="opacity:0"
+       no-cull    
+       >
+       <a-entity
+         light="
+           type: directional;
+           shadowBias: -0.0001
+           intensity: 0.65;
+           castShadow: true;
+           shadowMapHeight:2048;
+           shadowMapWidth:2048;
+           shadowCameraTop: 20;
+           shadowCameraBottom: -20;
+           shadowCameraRight: 20;
+           shadowCameraLeft: -20;
+           target: #pedro-model"
+         xrextras-attach="target: pedro-model; offset: 1 3 4"
+         position="1 4.3 2.5"
+         shadow>
+       </a-entity>
+     </a-entity>
+     <!-- END NAME AND JOB TITLE -->         
+     <!-- MENU ITEMS -->
+     <a-entity id="menu-items" position="-1 -0.25 0">
+       <a-image src="#web-icon" width="0.5" height="0.5" class="cantap icon clickable" position="-0.15 0 0.03" visible="false" link="href: mailto:pedro@cphlive.dk; title: Pedro's mail;" animation="delay: 200;"></a-image>
+       <a-image src="#phone-icon" width="0.5" height="0.5" class="cantap icon clickable" position="0.15 0 0.03" visible="false" link="href: tel:+45 20119996; title: Pedro's Phone;" animation="delay: 300;"></a-image>
+     </a-entity>
+     <!-- BOTTOM MENU ITEMS -->
+     <a-entity id="bot-menu-items">
+       <a-image src="#di-thumb" position="-0.89 -0.945 0.015" visible="false" width="0.68" height="0.69" class="cantap thumb clickable" material="opacity:0" link="href: https://cphlive.dk/kampagne-paa-en-uge-fra-ide-til-aktivering/; title: CPH DI;" animation="delay: 100;"></a-image>
+       <a-image src="#xr-thumb" position="0 -0.945 0.015" visible="false" width="0.68" height="0.69" class="cantap thumb clickable" material="opacity:0" link="href: https://cphlive.dk/xr-ar-vr-mr-hvad-er-forskellen-egentligt/; title: CPH XR;" animation="delay: 200;"></a-image>
+       <a-image src="#bb-thumb" position="0.89 -0.945 0.015" visible="false" width="0.68" height="0.69" class="cantap thumb clickable" material="opacity:0" link="href: https://cphlive.dk/case-big-bang/; title: CPH BB;" animation="delay: 300;"></a-image>
+ 
+       <a-image id="vid-thumb" src="#vidThumb" position="1.4 0 0.015" visible="false" width="0.64" height="0.48" scale="2 2 2" class="cantap thumb clickable" material="opacity:1" animation="delay: 500;"></a-image>
+     </a-entity>
+    </a-entity>
+ </a-scene>
+ 
